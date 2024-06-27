@@ -5,6 +5,8 @@ import os
 from github import Github
 import requests
 from bs4 import BeautifulSoup
+import chromadb
+from chromadb.utils import embedding_functions
 
 openai_api_key = os.environ.get('OPENAI_API_KEY')
 tavily_api_key = os.environ.get('TAVILY_API_KEY')
@@ -14,6 +16,10 @@ git_token = os.environ.get('GIT_TOKEN')
 client = OpenAI(api_key=openai_api_key)
 tavily_client = TavilyClient(api_key=tavily_api_key)
 g = Github(git_token)
+
+chroma_client = chromadb.PersistentClient(path="BE/storage/chromadb")
+default_ef = embedding_functions.DefaultEmbeddingFunction()
+collection = chroma_client.get_or_create_collection(name="files", embedding_function=default_ef)
 
 # Function to perform a Tavily search (sign up for an API key at https://app.tavily.com/home)
 def tavily_search(query):
@@ -33,9 +39,21 @@ def get_moodle_course_content(courseid):
 # Function for getting all repo names from Github
 def get_all_repo_name():
     result = []
-    for repo in g.get_user().get_repos():
+    for repo in g.get_user().get_repos(visibility='public'):
         result.append(repo.name)
     return json.dumps(result)
+
+
+# Function for getting content of all repo from Github
+def get_content_all_repos():
+    all_repos = g.get_user().get_repos(visibility='public')
+    all_content = {}
+    for repo in all_repos:
+        repo_name = repo.full_name
+        repo_content = get_content_given_repo(repo_name)
+        all_content[repo_name] = repo_content
+    return json.dumps(all_content, indent=4)
+
 
 
 # Function for returning the content of a given repository
@@ -51,11 +69,20 @@ def get_content_given_repo(repo_name):
             result.append(file_content)
     return json.dumps(f"{result}")
 
+
+
 def get_content_url(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     text_content = soup.get_text(separator=' ', strip=True)
     return text_content
+
+def query_chromadb(input):
+    results = collection.query(
+        query_texts=[input],
+        n_results=1
+    )
+    return json.dumps(f"{results}")
 
 
 functions = [{
@@ -100,6 +127,13 @@ functions = [{
     {
         "type": "function",
         "function": {
+            "name": "get_content_all_repos",
+            "description": "Getting content of all repo from Github",
+        }
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "get_content_given_repo",
             "description": "Get the content of a given repository",
             "parameters": {
@@ -114,7 +148,7 @@ functions = [{
             },
         }
     },
-{
+    {
         "type": "function",
         "function": {
             "name": "get_content_url",
@@ -130,6 +164,23 @@ functions = [{
                 "required": ["url"],
             },
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "query_chromadb",
+            "description": "Get the content of data from files stored in chromadb related to the user input ",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "input": {
+                        "type": "string",
+                        "description": "The user question want to ask about a certain information from files stored in chromadb",
+                    },
+                },
+                "required": ["input"],
+            },
+        }
     }
 ]
 
@@ -138,17 +189,38 @@ function_lookup = {
     "get_moodle_course_content": get_moodle_course_content,
     "get_all_repo_name": get_all_repo_name,
     "get_content_given_repo": get_content_given_repo,
-    "get_content_url": get_content_url
+    "get_content_url": get_content_url,
+    "query_chromadb": query_chromadb,
+    "get_content_all_repos": get_content_all_repos
 }
 
-
-""""## Create an assistant
+"""
+## Create an assistant
 assistant = client.beta.assistants.create(
     name="JobMate Assistant",
-    instructions="You are an assistant who has access to Moodle, GitHub and the web.",
+    instructions="You are an assistant who has access to Moodle, GitHub, Web and files stored in Chroma database, and"
+                 "also can browse web from a given URL. Help users in career consulting. Based on the information you have "
+                 "from the Moodle account and GitHub repositories of the user, and also the resume uploaded in the beginning and "
+                 "the URL of a job description can be provided, please optimize the resume so that it is most suitable for "
+                 "the position. You can also help them in preparing questions for the interview related to the given position"
+                 "Also based on information about their skills from GitHub, Moodle and resume, you can give recommendation on "
+                 "what they can learn more to persue this career and links of related online courses for that",
     tools=functions,
     model="gpt-3.5-turbo-0125"
-)"""
+)
+assistant = client.beta.assistants.create(
+    name="JobMate Assistant",
+    instructions="You are an assistant who has access to Moodle, GitHub, Web and files stored in Chroma database, and"
+                 "also can browse web from a given URL. Help users in career consulting. Based on the information you have "
+                 "from the Moodle account and GitHub repositories of the user, and also the resume uploaded in the beginning and "
+                 "the URL of a job description can be provided, please optimize the resume so that it is most suitable for "
+                 "the position. You can also help them in preparing questions for the interview related to the given position"
+                 "Also based on information about their skills from GitHub, Moodle and resume, you can give recommendation on "
+                 "what they can learn more to persue this career and links of related online courses for that",
+    tools=functions,
+    model="gpt-4-turbo"
+)
+"""
 
 
 # Function to handle tool output submission
