@@ -19,3 +19,19 @@ The app comes with an intelligent PDF reader tailored for resumes. Simply upload
 By providing a job description URL, the AI Assistant can extract and analyze the job requirements. It offers personalized advice on optimizing your resume, identifying missing skills, and suggesting relevant courses to improve your qualifications. Additionally, it prepares you for interviews by highlighting the essential skills and experiences required for the job.
 
 ##How It Works
+
+**Moodle Integration:**
+- Connect your Moodle account to the AI Assistant.
+- Browse through your enrolled courses and access detailed content effortlessly.
+
+**GitHub Integration:**
+- Connect your GitHub account to the AI Assistant.
+- Review information about your repositories, helping you manage and present your projects better.
+
+**Resume Optimization:**
+- Upload your PDF resume to the AI Assistant.
+- Receive a detailed analysis of your resume with suggestions for improvement, ensuring it aligns with job requirements.
+
+**Job Description Analysis:**
+- Provide a URL to the job description you are interested in.
+- Get a comprehensive breakdown of the job requirements, and receive tailored advice on how to enhance your resume and skillset.
