@@ -18,6 +18,9 @@ The app comes with an intelligent PDF reader tailored for resumes. Simply upload
 
 By providing a job description URL, the AI Assistant can extract and analyze the job requirements. It offers personalized advice on optimizing your resume, identifying missing skills, and suggesting relevant courses to improve your qualifications. Additionally, it prepares you for interviews by highlighting the essential skills and experiences required for the job.
 
+**5. Interview Preparation**:
+Our app can generate potential interview questions based on the job description and your resume. It provides answers and tips for each question, ensuring your responses align with your skills and experiences, helps you practice and build confidence for your interviews.
+
 ##How It Works
 
 **Moodle Integration:**
@@ -34,4 +37,9 @@ By providing a job description URL, the AI Assistant can extract and analyze the
 
 **Job Description Analysis:**
 - Provide a URL to the job description you are interested in.
-- Get a comprehensive breakdown of the job requirements, and receive tailored advice on how to enhance your resume and skillset.
+- Receive advice on how to enhance your resume and skillset.
+
+**Interview Preparation**:
+   - Upload your resume and provide the job description URL.
+   - The AI Assistant will generate a list of potential interview questions specific to the job role.
+   - Review the suggested answers and tips provided by the AI to ensure your responses are relevant.
