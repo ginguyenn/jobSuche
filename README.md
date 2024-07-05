@@ -3,22 +3,16 @@ Our innovative AI application is designed to streamline the job application proc
 
 ##Key Features
 
-**1. Leverage Moodle for Your Courses**
+**1. Leverage Moodle and GitHub for Your Courses**
 
-With our AI assistant, students can effortlessly manage their courses. By integrating with Moodle, the app allows users to access a list of all courses they are registered for. Not only that, but students can also retrieve detailed content from any specific course. This app helps them to better prepare for job applications and interviews by showcasing relevant coursework and skills.
-
-**2. Efficiently Manage Your GitHub Repositories**
-Our AI app connects with your GitHub account to provide comprehensive insights into your projects. Whether you want an overview of all your repositories or detailed information on a specific repository, our AI assistant can fetch this data quickly. This capability is particularly useful for demonstrating your coding skills and project experience to potential employers, making your portfolio more accessible and organized.
-
-**3. Smart PDF Resume Reader**
-
+AI assistant connects with Moodle and GitHub, helping you manage courses and repositories effortlessly. Access course details and showcase skills for job applications, while easily organizing and presenting your coding projects to potential employers. This app helps them to better prepare for job applications and interviews by showcasing relevant coursework and skills.
 The app comes with an intelligent PDF reader tailored for resumes. Simply upload your resume in PDF format, and our AI will parse and analyze the content. This feature helps in highlighting key information, ensuring that your resume is optimized and ready for job applications. Our app can also provide suggestions for improvements, making sure your resume stands out to recruiters.
 
-**4. Job Description Analysis**
+**2. Job Description Analysis**
 
 By providing a job description URL, the AI Assistant can extract and analyze the job requirements. It offers personalized advice on optimizing your resume, identifying missing skills, and suggesting relevant courses to improve your qualifications. Additionally, it prepares you for interviews by highlighting the essential skills and experiences required for the job.
 
-**5. Interview Preparation**:
+**3. Interview Preparation**:
 Our app can generate potential interview questions based on the job description and your resume. It provides answers and tips for each question, ensuring your responses align with your skills and experiences, helps you practice and build confidence for your interviews.
 
 ##How It Works
