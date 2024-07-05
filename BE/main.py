@@ -1,23 +1,24 @@
-import uvicorn
-from fastapi import FastAPI
-from openai import OpenAI
-from agent import submit_tool_outputs
-import fitz
 import os
 import time
-from pydantic import BaseModel
-import chromadb
-from chromadb.utils import embedding_functions
 from datetime import datetime
 
-openai_api_key = os.environ.get('OPENAI_API_KEY')
-client = OpenAI(api_key=openai_api_key)
+from dotenv import load_dotenv
+from typing import List, Optional
 
-#GPT 3.5
-assistant_id = "asst_hiPrSu0i132e9CX6XMnSrGKw"
+import chromadb
+import fitz
+import uvicorn
+from chromadb.utils import embedding_functions
+from fastapi import FastAPI
+from openai import OpenAI
+from pydantic import BaseModel
 
-#GPT 4
-#assistant_id = "asst_jp2GubaYiG6odVi2A2TNDdfv"
+from agent import submit_tool_outputs
+
+load_dotenv()
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+assistant_id = os.getenv('ASSISTANT_ID')
 
 chroma_client = chromadb.PersistentClient(path="BE/storage/chromadb")
 default_ef = embedding_functions.DefaultEmbeddingFunction()
@@ -25,13 +26,14 @@ collection = chroma_client.get_or_create_collection(name="files", embedding_func
 
 app = FastAPI()
 
+class UploadedFile(BaseModel):
+    #file_id: str
+    path: str
+    name: str
+
 class MessageInput(BaseModel):
     text: str
     thread_id: str
-
-class UploadedFile(BaseModel):
-    path: str
-    name: str
 
 
 @app.post("/upload_file")

@@ -1,27 +1,30 @@
+import os
+import requests
+import json
+import chromadb
+from dotenv import load_dotenv
+
 from openai import OpenAI
 from tavily import TavilyClient
-import json
-import os
 from github import Github
-import requests
 from bs4 import BeautifulSoup
-import chromadb
 from chromadb.utils import embedding_functions
 
-openai_api_key = os.environ.get('OPENAI_API_KEY')
-tavily_api_key = os.environ.get('TAVILY_API_KEY')
-moodle_token = os.environ.get('MOODLE_TOKEN')
-git_token = os.environ.get('GIT_TOKEN')
+load_dotenv()
 
-client = OpenAI(api_key=openai_api_key)
-tavily_client = TavilyClient(api_key=tavily_api_key)
-g = Github(git_token)
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+tavily_client = TavilyClient(api_key=os.getenv('TAVILY_KEY'))
+moodle_token = os.getenv('MOODLE_TOKEN')
+github_token = os.getenv('GITHUB_TOKEN')
+
+g = Github(github_token)
+moodle_domain = 'https://moodle.htw-berlin.de/webservice/rest/server.php'
 
 chroma_client = chromadb.PersistentClient(path="BE/storage/chromadb")
 default_ef = embedding_functions.DefaultEmbeddingFunction()
 collection = chroma_client.get_or_create_collection(name="files", embedding_function=default_ef)
 
-# Function to perform a Tavily search (sign up for an API key at https://app.tavily.com/home)
+# Function to perform a Tavily search
 def tavily_search(query):
     search_result = tavily_client.get_search_context(query, search_depth="advanced", max_tokens=8000)
     return search_result
@@ -29,11 +32,26 @@ def tavily_search(query):
 
 # Function for getting content of moodle course.
 def get_moodle_course_content(courseid):
-    """Get the content of a given moodle course"""
-    moodle_call = 'https://moodle.htw-berlin.de/webservice/rest/server.php?wstoken=' + moodle_token + \
+    moodle_call = f'{moodle_domain}?wstoken=' + moodle_token + \
                   '&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=' + courseid
-    r = requests.get(moodle_call)
-    return json.dumps(r.json())
+    response = requests.get(moodle_call).json()
+    return json.dumps(response)
+
+
+# Function for getting enrolled courses of actual user
+def get_users_enrolled_courses():
+    moodle_call = f'{moodle_domain}?wstoken=' + moodle_token + \
+                  '&wsfunction=core_webservice_get_site_info&moodlewsrestformat=json'
+    userid = requests.get(moodle_call).json()['userid']
+
+    params = {
+        'wstoken': moodle_token,
+        'userid': userid,
+        'wsfunction': 'core_enrol_get_users_courses',
+        'moodlewsrestformat': 'json'
+    }
+    response = requests.get(moodle_domain, params=params).json()
+    return json.dumps(f'{response}')
 
 
 # Function for getting all repo names from Github
@@ -85,108 +103,11 @@ def query_chromadb(input):
     return json.dumps(f"{results}")
 
 
-functions = [{
-        "type": "function",
-        "function": {
-            "name": "tavily_search",
-            "description": "Get information on from the web and given URL.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "query": {"type": "string",
-                              "description": "The search query to use."},
-                },
-                "required": ["query"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_moodle_course_content",
-            "description": "Get the content of a given moodle course",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "courseid": {
-                        "type": "string",
-                        "description": "The ID of a moodle course, e.g. 36301",
-                    },
-                },
-                "required": ["courseid"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_all_repo_name",
-            "description": "Get all repo names from Github",
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_content_all_repos",
-            "description": "Getting content of all repo from Github",
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_content_given_repo",
-            "description": "Get the content of a given repository",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "repo_name": {
-                        "type": "string",
-                        "description": "The name of a repository, e.g. github-starter-course",
-                    },
-                },
-                "required": ["repo_name"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_content_url",
-            "description": "Get the content of a given url and answer the question from the user",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "url": {
-                        "type": "string",
-                        "description": "The url of a website",
-                    },
-                },
-                "required": ["url"],
-            },
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "query_chromadb",
-            "description": "Get the content of data from files stored in chromadb related to the user input ",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "input": {
-                        "type": "string",
-                        "description": "The user question want to ask about a certain information from files stored in chromadb",
-                    },
-                },
-                "required": ["input"],
-            },
-        }
-    }
-]
 
 function_lookup = {
     "tavily_search": tavily_search,
     "get_moodle_course_content": get_moodle_course_content,
+    "get_users_enrolled_courses": get_users_enrolled_courses,
     "get_all_repo_name": get_all_repo_name,
     "get_content_given_repo": get_content_given_repo,
     "get_content_url": get_content_url,
@@ -194,33 +115,6 @@ function_lookup = {
     "get_content_all_repos": get_content_all_repos
 }
 
-"""
-## Create an assistant
-assistant = client.beta.assistants.create(
-    name="JobMate Assistant",
-    instructions="You are an assistant who has access to Moodle, GitHub, Web and files stored in Chroma database, and"
-                 "also can browse web from a given URL. Help users in career consulting. Based on the information you have "
-                 "from the Moodle account and GitHub repositories of the user, and also the resume uploaded in the beginning and "
-                 "the URL of a job description can be provided, please optimize the resume so that it is most suitable for "
-                 "the position. You can also help them in preparing questions for the interview related to the given position"
-                 "Also based on information about their skills from GitHub, Moodle and resume, you can give recommendation on "
-                 "what they can learn more to persue this career and links of related online courses for that",
-    tools=functions,
-    model="gpt-3.5-turbo-0125"
-)
-assistant = client.beta.assistants.create(
-    name="JobMate Assistant",
-    instructions="You are an assistant who has access to Moodle, GitHub, Web and files stored in Chroma database, and"
-                 "also can browse web from a given URL. Help users in career consulting. Based on the information you have "
-                 "from the Moodle account and GitHub repositories of the user, and also the resume uploaded in the beginning and "
-                 "the URL of a job description can be provided, please optimize the resume so that it is most suitable for "
-                 "the position. You can also help them in preparing questions for the interview related to the given position"
-                 "Also based on information about their skills from GitHub, Moodle and resume, you can give recommendation on "
-                 "what they can learn more to persue this career and links of related online courses for that",
-    tools=functions,
-    model="gpt-4-turbo"
-)
-"""
 
 
 # Function to handle tool output submission
