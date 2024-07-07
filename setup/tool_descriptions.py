@@ -108,6 +108,30 @@ functions = [{
                 "required": ["courseid"],
             }
         }
-    }
+    },
+
+    {"type": "code_interpreter"},
+
+    """{
+        "type": "function",
+        "function": {
+            "name": "scrape_careerjet",
+            "description": "Scrape job listings from Careerjet based on the job title and location.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The location of the job, e.g. Berlin",
+                    },
+                    "jobtitle": {
+                        "type": "string",
+                        "description": "The title of the job, e.g. Software Engineer"
+                    }
+                },
+                "required": ["location", "jobtitle"]
+            }
+        }
+    },"""
 
 ]

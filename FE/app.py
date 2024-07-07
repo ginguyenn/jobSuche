@@ -1,14 +1,13 @@
-import requests
 import os
-import chainlit as cl
-
-from pathlib import Path
 from io import BytesIO
+from pathlib import Path
+from typing import List
+
+import chainlit as cl
+import requests
+from chainlit.element import Element
 from dotenv import load_dotenv
 from openai import OpenAI
-from typing import List, Dict
-
-from chainlit.element import Element
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -48,9 +47,8 @@ async def process_files(files: List[Element]):
 @cl.on_chat_start
 async def on_chat_start():
     thread = client.beta.threads.create()
-    cl.user_session.get("chat_profile")
     cl.user_session.set("thread_id", thread.id)
-    text =("# Welcome to JobMate! 🚀🤖 \n Hi there, Student! 👋 We're excited to have you on board.")
+    text =("# Welcome to JobMate! 🚀🤖 \n Hi there, Student! 👋 We're excited to have you on board. Please read the usage instructions in the README file on the left.")
     await cl.Message(content=text).send()
     #elements = [cl.Image(name="image1", display="inline", path="./pic.png")]
     #await cl.Message(content="", elements=elements).send()

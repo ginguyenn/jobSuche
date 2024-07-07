@@ -1,43 +1,46 @@
-# Generative AI for Career Navigator
-Our innovative AI application is designed to streamline the job application process for students, providing a comprehensive suite of tools that cater to various aspects of their career journey.
+# JobMate - Generative AI for Career Navigator
+**JobMate** is designed to streamline the job application process for students, providing a comprehensive suite of tools that cater to various aspects of their career journey.😊
 
-### Key Features
+### Project Structure
 
-**1. Career Consulting + CV Optimization**
+### 🚀 Key Features
 
-AI assistant can connect with Moodle and GitHub to access course details as well as your GitHub Repos. It gives you advice about your career path based on your coursework, coding projects and skills to better prepare for job applications.
+#### 1. Career Consulting + CV Optimization
 
-Simply upload your resume in PDF format, and our AI will parse and analyze the content. This feature helps in highlighting key information, ensuring that your resume is optimized and ready for job applications. Our app can also provide suggestions for improvements, making sure your resume stands out to recruiters.
+JobMate can connect with Moodle and GitHub to access course details as well as your GitHub Repos. It gives you advice about your career path based on your coursework, coding projects and skills to better prepare for job applications.
 
-**2. Job Description Analysis**
+Simply upload your resume in PDF format, and JobMate will parse and analyze the content. This feature helps in highlighting key information, ensuring that your resume is optimized and ready for job applications. JobMate can also provide suggestions for improvements, making sure your resume stands out to recruiters.
 
-By providing a job description URL, the AI Assistant can extract and analyze the job requirements. It offers personalized advice on optimizing your resume, identifying missing skills, and suggesting relevant courses to improve your qualifications. Additionally, it prepares you for interviews by highlighting the essential skills and experiences required for the job.
+#### 2. Job Description Analysis
 
-**3. Interview Preparation**:
-Our app can generate potential interview questions based on the job description and your resume. It provides answers and tips for each question, ensuring your responses align with your skills and experiences, helps you practice and build confidence for your interviews.
+By providing a job description URL, JobMate can extract and analyze the job requirements. It offers personalized advice on optimizing your resume, identifying missing skills, and suggesting relevant courses to improve your qualifications. Additionally, it prepares you for interviews by highlighting the essential skills and experiences required for the job.
 
-**4. Speech to Text**:
-You can interact with our AI effortlessly by speaking your queries besides typing.
+#### 3. Interview Preparation:
+JobMate can generate potential interview questions based on the job description and your resume. It provides answers and tips for each question, ensuring your responses align with your skills and experiences, helps you practice and build confidence for your interviews.
+
+#### 4. Speech to Text:
+You can interact with JobMate effortlessly by speaking your queries besides typing.
 
 ### How It Works
 
-**Moodle Integration:**
-- Connect your Moodle account to the AI Assistant by your Moodle Token.
-- Browse through your enrolled courses and access detailed content effortlessly.
+#### 📚 Moodle Integration:
+- Connect your Moodle account to JobMate through your Moodle Token
+- Browse through your enrolled courses and access detailed content effortlessly
 
-**GitHub Integration:**
-- Connect your GitHub account to the AI Assistant by your GitHub Token.
-- Review information about your repositories, helping you manage and present your projects better.
+#### 📦 GitHub Integration:
+- Connect your GitHub account to JobMate through your GitHub Token
+- Review information about your repositories, helping you manage and present your projects better
 
-**Resume Optimization:**
-- Upload your PDF resume to the AI Assistant.
-- Receive a detailed analysis of your resume with suggestions for improvement, ensuring it aligns with job requirements.
+#### 📝 Resume Optimization:
+- Upload your PDF resume to the AI Assistant
+- Receive a detailed analysis of your resume with suggestions for improvement, ensuring it aligns with job requirements
 
-**Job Description Analysis:**
-- Provide a URL to the job description you are interested in.
-- Receive advice on how to enhance your resume and skillset.
+#### 💻 Job Description Analysis:
+- Extract content of job description from your given URL
+- Receive advice on how to enhance your resume and skillset
 
-**Interview Preparation**:
+#### 💡 Interview Preparation:
 - Upload your resume and provide the job description URL.
-- The AI Assistant will generate a list of potential interview questions specific to the job role.
-- Review the suggested answers and tips provided by the AI to ensure your responses are relevant.
+- JobMate will generate a list of potential interview questions specific to the job role
+- Review the suggested answers and tips provided by JobMate to ensure your responses are relevant
+

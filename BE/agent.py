@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 import requests
 import json
 import chromadb
@@ -9,7 +10,6 @@ from tavily import TavilyClient
 from github import Github
 from bs4 import BeautifulSoup
 from chromadb.utils import embedding_functions
-
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -65,27 +65,30 @@ def get_all_repo_name():
 # Function for getting content of all repo from Github
 def get_content_all_repos():
     all_repos = g.get_user().get_repos(visibility='public')
-    all_content = {}
+    all_content = []
     for repo in all_repos:
-        repo_name = repo.full_name
-        repo_content = get_content_given_repo(repo_name)
-        all_content[repo_name] = repo_content
+        repo_content = get_content_given_repo(repo.name)
+        content = dict()
+        content[repo.name] = repo_content
+        all_content.append(content)
     return json.dumps(all_content, indent=4)
 
 
 
 # Function for returning the content of a given repository
 def get_content_given_repo(repo_name):
-    repo = g.get_repo(f"{repo_name}")
-    contents = repo.get_contents("")
-    result = []
-    while contents:
-        file_content = contents.pop(0)
-        if file_content.type == "dir":
-            contents.extend(repo.get_contents(file_content.path))
-        else:
-            result.append(file_content)
-    return json.dumps(f"{result}")
+    for repo in g.get_user().get_repos(visibility='public'):
+        if repo.name == str(repo_name):
+            repo = g.get_repo(f"{repo.full_name}")
+            contents = repo.get_contents("")
+            result = []
+            while contents:
+                file_content = contents.pop(0)
+                if file_content.type == "dir":
+                    contents.extend(repo.get_contents(file_content.path))
+                else:
+                    result.append(file_content)
+            return json.dumps(f"{result}")
 
 
 
@@ -102,6 +105,55 @@ def query_chromadb(input):
     )
     return json.dumps(f"{results}")
 
+def scrape_careerjet(job_title, location):
+    job_listings = []
+    base_url = "https://www.careerjet.de/stellenangebote"
+
+    for page in range(1):
+        params = {
+            's': job_title,
+            'l': location,
+            'nw': 7,
+            'p': page + 1
+        }
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept-Language': 'de-DE,de;q=0.9,en-US,en;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Referer': 'https://www.careerjet.com/'
+        }
+
+        response = requests.get(base_url, params=params, headers=headers)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        for job_card in soup.find_all('article', class_='job'):
+            try:
+                job_title = job_card.find('header').text.strip()
+            except AttributeError:
+                job_title = None
+            try:
+                company = job_card.find('p', class_='company').text.strip()
+            except AttributeError:
+                company = None
+            try:
+                location = job_card.find('ul', class_='location').text.strip()
+            except AttributeError:
+                location = None
+            try:
+                jd = job_card.find('div', class_='desc').text.strip()
+            except AttributeError:
+                jd = None
+
+            job_listings.append({
+                'Job Title': job_title,
+                'Company': company,
+                'Location': location,
+                'Job Description': jd,
+            })
+
+    return pd.DataFrame(job_listings).to_html(index=False)
 
 
 function_lookup = {
@@ -112,7 +164,8 @@ function_lookup = {
     "get_content_given_repo": get_content_given_repo,
     "get_content_url": get_content_url,
     "query_chromadb": query_chromadb,
-    "get_content_all_repos": get_content_all_repos
+    "get_content_all_repos": get_content_all_repos,
+    #"scrape_careerjet": scrape_careerjet
 }
 
 
