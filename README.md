@@ -1,6 +1,13 @@
 # JobMate - Generative AI for Career Navigator
 **JobMate** is designed to streamline the job application process for students, providing a comprehensive suite of tools that cater to various aspects of their career journey.😊
 
+### 📂 Guideline
+
+- **Create Assistant**: Run `jobmate_agent.py` in setup/jobmate_agent.py
+- **Backend**: Run `main.py` in BE/main.py
+- **Frontend**: Run `app.py` in FE/app.py
+- **Documentation**: Open `Results.md` in Documentation/Results.md
+
 ### 🚀 Key Features
 
 #### 1. Career Consulting + CV Optimization
