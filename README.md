@@ -1,8 +1,6 @@
 # JobMate - Generative AI for Career Navigator
 **JobMate** is designed to streamline the job application process for students, providing a comprehensive suite of tools that cater to various aspects of their career journey.😊
 
-### Project Structure
-
 ### 🚀 Key Features
 
 #### 1. Career Consulting + CV Optimization
@@ -44,3 +42,23 @@ You can interact with JobMate effortlessly by speaking your queries besides typi
 - JobMate will generate a list of potential interview questions specific to the job role
 - Review the suggested answers and tips provided by JobMate to ensure your responses are relevant
 
+### ⚙️ Project Structure
+<img alt="6.png" src="./Structure.png" style="border:1px solid"/>
+
+**1. AI Integration:**
+OpenAI Assistant is used to solve the chosen problem. Function calling mechanisms are implemented to handle tools from getting all GitHub repos to retrieving all enrolled courses in Moodle dynamically based on the application's needs.
+
+**2. Backend Development:**
+- File agent.py incorporates function calling to dynamically select and use different tools or services based on user interactions or data inputs. 
+Many functions with integrations of third-party tools such as GitHub, Moodle and user URL are also implemented here.
+- File main.py handles API endpoints to process user message with AI or user's uploaded file and send it back to frontend.
+- File app.py gets user's message or upload file and send it to backend while awaiting AI-generated responses.
+- Backend and frontend code will be interacted with each other through using FastAPI
+
+**3. Database Integration:**
+ChromaDB is implement as a vector database to manage uploaded files and dynamically generate query responses 
+or database entries based on the context provided by AI-driven analysis.
+
+**4. Interface Development:**
+Chainlit is used to develop an user interface that is intuitive and caters to the needs of the end-users. 
+The interface allow users to interact with the AI functionalities effortlessly by speaking your queries besides typing.
