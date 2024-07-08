@@ -3,10 +3,11 @@
 
 ### 📂 Guideline
 
-- **Create Assistant**: Run `jobmate_agent.py` in setup/jobmate_agent.py
-- **Backend**: Run `main.py` in BE/main.py
-- **Frontend**: Run `app.py` in FE/app.py
-- **Documentation**: Open `Results.md` in Documentation/Results.md
+- **Create Assistant**: Run `jobmate_agent.py` in `setup/jobmate_agent.py`
+- **Function Callings**: `setup/tool_descriptiony.py` and `BE/agent.py`
+- **Backend**: Run `main.py` in `BE/main.py`
+- **Frontend**: Run `app.py` in `FE/app.py`
+- **Documentation**: Open `Results.md` in `Documentation/Results.md`
 
 ### 🚀 Key Features
 
@@ -67,5 +68,5 @@ ChromaDB is implement as a vector database to manage uploaded files and dynamica
 or database entries based on the context provided by AI-driven analysis.
 
 **4. Interface Development:**
-Chainlit is used to develop an user interface that is intuitive and caters to the needs of the end-users. 
+Chainlit is used to develop a user interface that is intuitive and caters to the needs of the end-users. 
 The interface allow users to interact with the AI functionalities effortlessly by speaking your queries besides typing.

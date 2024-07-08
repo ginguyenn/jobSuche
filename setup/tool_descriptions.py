@@ -110,9 +110,10 @@ functions = [{
         }
     },
 
-    {"type": "code_interpreter"},
+    {"type": "code_interpreter"}
 
-    """{
+]
+"""{
         "type": "function",
         "function": {
             "name": "scrape_careerjet",
@@ -133,5 +134,3 @@ functions = [{
             }
         }
     },"""
-
-]
